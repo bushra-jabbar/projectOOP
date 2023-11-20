@@ -16,7 +16,7 @@ public class ElectionSystem extends Application {
     private static final String ADMIN_USERNAME = "admin";
     private static final String ADMIN_PASSWORD = "admin123";
 
-    // In-memory data structures for simplicity (replace with a database in a real application)
+
     private static final List<User> users = new ArrayList<>();
     private static final List<String> votedUsers = new ArrayList<>();
 
@@ -37,22 +37,20 @@ public class ElectionSystem extends Application {
         Scene scene = new Scene(grid, 600, 400);
         primaryStage.setScene(scene);
 
-        // Adding sample users
         users.add(new User("voter1", "voter123", UserType.VOTER));
         users.add(new User("partyCandidate1", "party123", UserType.PARTY_CANDIDATE));
         users.add(new User("admin", "admin123", UserType.ADMIN));
 
-        // Login as Voter
+
         Button voterLoginButton = new Button("Voter Login");
         grid.add(voterLoginButton, 0, 0);
         voterLoginButton.setOnAction(e -> showLogin(UserType.VOTER));
 
-        // Login as Party Candidate
+
         Button partyCandidateLoginButton = new Button("Party Candidate Login");
         grid.add(partyCandidateLoginButton, 1, 0);
         partyCandidateLoginButton.setOnAction(e -> showLogin(UserType.PARTY_CANDIDATE));
 
-        // Login as Admin
         Button adminLoginButton = new Button("Admin Login");
         grid.add(adminLoginButton, 2, 0);
         adminLoginButton.setOnAction(e -> showLogin(UserType.ADMIN));
@@ -64,14 +62,14 @@ public class ElectionSystem extends Application {
         Stage loginStage = new Stage();
         loginStage.setTitle(userType + " Login");
 
-        // Create components for login
+
         Label usernameLabel = new Label("Username:");
         TextField usernameField = new TextField();
         Label passwordLabel = new Label("Password:");
         PasswordField passwordField = new PasswordField();
         Button loginButton = new Button("Login");
 
-        // Add components to layout
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -84,12 +82,12 @@ public class ElectionSystem extends Application {
         grid.add(passwordField, 1, 1);
         grid.add(loginButton, 1, 2);
 
-        // Handle login button action
+
         loginButton.setOnAction(e -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
 
-            // Perform login validation
+
             if (isValidLogin(username, password, userType)) {
                 if (userType == UserType.VOTER && !votedUsers.contains(username)) {
                     // Open voter dashboard or perform further actions
