@@ -42,7 +42,6 @@ public class ElectionSystem extends Application {
         users.add(new User("partyCandidate1", "party123", UserType.PARTY_CANDIDATE));
         users.add(new User("admin", "admin123", UserType.ADMIN));
 
-        //Login as Voter
         Button voterLoginButton = new Button("Voter Login");
         grid.add(voterLoginButton, 0, 0);
         voterLoginButton.setOnAction(e -> showLogin(UserType.VOTER));
