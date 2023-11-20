@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ElectionSystem extends Application {
-
+//
     private static final String ADMIN_USERNAME = "admin";
     private static final String ADMIN_PASSWORD = "admin123";
 
