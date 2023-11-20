@@ -18,7 +18,6 @@ public class ElectionSystem extends Application {
     private static final String ADMIN_USERNAME = "admin";
     private static final String ADMIN_PASSWORD = "admin123";
 
-
     private static final List<User> users = new ArrayList<>();
     private static final List<String> votedUsers = new ArrayList<>();
 
@@ -32,13 +31,13 @@ public class ElectionSystem extends Application {
 
 
         GridPane grid = new GridPane();
-//        Text headingText = new Text("E Voting System");
-//        headingText.setFont(Font.font("Times new roman", 14));
-//        grid.add(headingText, 0, 1); // Added heading to the center column
+        Text headingText = new Text("E Voting System");
+        headingText.setFont(Font.font("Times new roman", 20));
+        grid.add(headingText, 0, 0); // Added heading to the center column
 
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
-        grid.setVgap(10);
+        grid.setVgap(23);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
         Scene scene = new Scene(grid, 600, 400);
@@ -48,19 +47,20 @@ public class ElectionSystem extends Application {
         users.add(new User("voter1", "voter123", UserType.VOTER));
         users.add(new User("partyCandidate1", "party123", UserType.PARTY_CANDIDATE));
         users.add(new User("admin", "admin123", UserType.ADMIN));
-
-//voterlogin button
+        //voter login button
         Button voterLoginButton = new Button("Voter Login");
-        grid.add(voterLoginButton, 0, 0);
+        grid.add(voterLoginButton, 1, 0);
         voterLoginButton.setOnAction(e -> showLogin(UserType.VOTER));
 
 
+        //candidate login button
         Button partyCandidateLoginButton = new Button("Party Candidate Login");
-        grid.add(partyCandidateLoginButton, 1, 0);
+        grid.add(partyCandidateLoginButton, 2, 0);
         partyCandidateLoginButton.setOnAction(e -> showLogin(UserType.PARTY_CANDIDATE));
 
+        //admin login button
         Button adminLoginButton = new Button("Admin Login");
-        grid.add(adminLoginButton, 2, 0);
+        grid.add(adminLoginButton, 3, 0);
         adminLoginButton.setOnAction(e -> showLogin(UserType.ADMIN));
 
         primaryStage.show();
