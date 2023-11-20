@@ -82,7 +82,7 @@ public class ElectionSystem extends Application {
         grid.add(passwordField, 1, 1);
         grid.add(loginButton, 1, 2);
 
-
+//
         loginButton.setOnAction(e -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
