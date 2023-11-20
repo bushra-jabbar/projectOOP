@@ -6,6 +6,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -28,20 +30,26 @@ public class ElectionSystem extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("E-election System");
 
+
         GridPane grid = new GridPane();
-        grid.setAlignment(Pos.TOP_CENTER);
+//        Text headingText = new Text("E Voting System");
+//        headingText.setFont(Font.font("Times new roman", 14));
+//        grid.add(headingText, 0, 1); // Added heading to the center column
+
+        grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
         Scene scene = new Scene(grid, 600, 400);
+
         primaryStage.setScene(scene);
 
         users.add(new User("voter1", "voter123", UserType.VOTER));
         users.add(new User("partyCandidate1", "party123", UserType.PARTY_CANDIDATE));
         users.add(new User("admin", "admin123", UserType.ADMIN));
 
-
+//voterlogin button
         Button voterLoginButton = new Button("Voter Login");
         grid.add(voterLoginButton, 0, 0);
         voterLoginButton.setOnAction(e -> showLogin(UserType.VOTER));
