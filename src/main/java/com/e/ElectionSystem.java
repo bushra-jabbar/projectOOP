@@ -1,5 +1,4 @@
 package com.e;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,7 +10,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ElectionSystem extends Application {
 
@@ -20,6 +21,7 @@ public class ElectionSystem extends Application {
 
     private static final List<User> users = new ArrayList<>();
     private static final List<String> votedUsers = new ArrayList<>();
+    private static final Map<String, String> partySlogans = new HashMap<>(); // Store party slogans
 
     // Sample parties with their names and passwords
     private static final String PARTY1_NAME = "Party1";
@@ -28,8 +30,6 @@ public class ElectionSystem extends Application {
     private static final String PARTY2_PASSWORD = "party2pass";
     private static final String PARTY3_NAME = "Party3";
     private static final String PARTY3_PASSWORD = "party3pass";
-
-
 
     private void showLogin(UserType userType) {
         Stage loginStage = new Stage();
@@ -106,8 +106,6 @@ public class ElectionSystem extends Application {
         TextField partyNameField = new TextField();
         Label partyPasswordLabel = new Label("Party Password:");
         PasswordField partyPasswordField = new PasswordField();
-        Label sloganLabel = new Label("Party Slogan:");
-        TextField sloganTextField = new TextField("Editable Slogan");
         Button loginButton = new Button("Login");
 
         GridPane grid = new GridPane();
@@ -124,8 +122,6 @@ public class ElectionSystem extends Application {
         grid.add(partyNameField, 1, 2);
         grid.add(partyPasswordLabel, 0, 3);
         grid.add(partyPasswordField, 1, 3);
-        grid.add(sloganLabel, 0, 4);
-        grid.add(sloganTextField, 1, 4);
         grid.add(loginButton, 1, 5);
 
         loginButton.setOnAction(e -> {
@@ -133,7 +129,7 @@ public class ElectionSystem extends Application {
             int age = Integer.parseInt(ageField.getText());
             String partyName = partyNameField.getText();
             String partyPassword = partyPasswordField.getText();
-            String slogan = sloganTextField.getText();
+            String slogan = partySlogans.getOrDefault(partyName, "Default Slogan"); // Retrieve slogan or use default
 
             // Check age requirement
             if (age < 21) {
@@ -142,14 +138,15 @@ public class ElectionSystem extends Application {
             }
 
             // Check party login validation
-            if (isValidPartyLogin(name, age, partyName, partyPassword)) {
+            if (isValidPartyLogin(name, age, partyName, partyPassword, slogan)) {
                 // Open party candidate dashboard or perform further actions
-                showCandidateDashboard(name, partyName, slogan);
+                showCandidateDashboard(name, partyName);
                 partyCandidateLoginStage.close();
-            } else {
-                // Display invalid login message
-                showAlert("Invalid Login", "Invalid candidate name, age, party name, or party password. Please try again.");
             }
+//            else {
+//                // Display invalid login message
+//                showAlert("Invalid Login", "Invalid candidate name, age, party name, or party password. Please try again.");
+//            }
         });
 
         Scene scene = new Scene(grid, 400, 300);
@@ -157,17 +154,22 @@ public class ElectionSystem extends Application {
         partyCandidateLoginStage.show();
     }
 
-    private void showCandidateDashboard(String candidateName, String partyName, String slogan) {
+    private void showCandidateDashboard(String candidateName, String partyName) {
         Stage candidateDashboardStage = new Stage();
         candidateDashboardStage.setTitle("Candidate Dashboard");
 
         // Create components for candidate dashboard
         Label welcomeLabel = new Label("Welcome, " + candidateName + "!");
         Label partyLabel = new Label("Party: " + partyName);
-        Label sloganLabel = new Label("Party Slogan: " + slogan); // Display the edited slogan
+        String slogan = partySlogans.getOrDefault(partyName, "Default Slogan"); // Retrieve slogan or use default
+        Label sloganLabel = new Label("Party Slogan: " + slogan);
+        Button editSloganButton = new Button("Edit Slogan");
         Label votesLabel = new Label("Current Votes Gained: 0"); // TODO: Implement vote counting
         Label probabilityLabel = new Label("Probability of winning is 50%");
-        Button backButton = new Button("Back"); // Define backButton here
+        Button backButton = new Button("Back");
+
+        // Add complain button
+        Button complainButton = new Button("Complain");
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -180,7 +182,9 @@ public class ElectionSystem extends Application {
         grid.add(sloganLabel, 0, 2);
         grid.add(votesLabel, 0, 3);
         grid.add(probabilityLabel, 0, 4);
-        grid.add(backButton, 0, 5); // Add backButton to the grid
+        grid.add(backButton, 0, 5);
+        grid.add(editSloganButton, 1, 5);
+        grid.add(complainButton, 2, 5); // Add complain button to the grid
 
         // Handle the back button action
         backButton.setOnAction(e -> {
@@ -188,22 +192,71 @@ public class ElectionSystem extends Application {
             candidateDashboardStage.close();
         });
 
+        // Handle edit slogan button action
+        editSloganButton.setOnAction(e -> {
+            // Implement code to allow editing the party slogan
+            // For simplicity, you can use a text field in a dialog for editing
+            TextInputDialog dialog = new TextInputDialog(slogan);
+            dialog.setTitle("Edit Party Slogan");
+            dialog.setHeaderText("Edit your party slogan:");
+            dialog.setContentText("Slogan:");
+
+            // Get the new slogan
+            dialog.showAndWait().ifPresent(newSlogan -> {
+                partySlogans.put(partyName, newSlogan);
+                sloganLabel.setText("Party Slogan: " + newSlogan);
+            });
+        });
+
+        // Handle complain button action
+        complainButton.setOnAction(e -> {
+            // Implement code to handle complaints
+            TextArea complainTextArea = new TextArea();
+            complainTextArea.setPromptText("Enter your complaint here");
+
+            // Create a dialog for entering complaints
+            Dialog<String> complainDialog = new Dialog<>();
+            complainDialog.setTitle("Complain");
+            complainDialog.setHeaderText("Enter your complaint:");
+            complainDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+            complainDialog.getDialogPane().setContent(complainTextArea);
+
+            // Handle the result of the dialog
+            complainDialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
+                    String complaint = complainTextArea.getText();
+                    // Store the complaint (For simplicity, you can print it here)
+                    System.out.println("Complaint: " + complaint);
+                    return "Complaint recorded successfully";
+                }
+                return null;
+            });
+
+            // Show the dialog
+            complainDialog.showAndWait().ifPresent(result -> {
+                // Display a message indicating that the complaint has been recorded successfully
+                showAlert("Complaint Recorded", result);
+            });
+        });
+
         Scene scene = new Scene(grid, 400, 300);
         candidateDashboardStage.setScene(scene);
         candidateDashboardStage.show();
     }
 
-    private boolean isValidPartyLogin(String name, int age, String partyName, String partyPassword) {
+    private boolean isValidPartyLogin(String name, int age, String partyName, String partyPassword, String slogan) {
         // Check party login validation logic here
         // For simplicity, check against predefined party names and passwords
-        return (partyName.equals(PARTY1_NAME) && partyPassword.equals(PARTY1_PASSWORD)) ||
+        if ((partyName.equals(PARTY1_NAME) && partyPassword.equals(PARTY1_PASSWORD)) ||
                 (partyName.equals(PARTY2_NAME) && partyPassword.equals(PARTY2_PASSWORD)) ||
-                (partyName.equals(PARTY3_NAME) && partyPassword.equals(PARTY3_PASSWORD));
+                (partyName.equals(PARTY3_NAME) && partyPassword.equals(PARTY3_PASSWORD))) {
+            partySlogans.put(partyName, slogan); // Store the slogan
+            return true;
+        } else {
+            showAlert("Invalid Party Login", "Invalid party name or password. Please try again.");
+            return false;
+        }
     }
-
-     //... (rest of your code)
-
-
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -254,5 +307,33 @@ public class ElectionSystem extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+}
+
+enum UserType {
+    VOTER, PARTY_CANDIDATE, ADMIN
+}
+
+class User {
+    private final String username;
+    private final String password;
+    private final UserType userType;
+
+    public User(String username, String password, UserType userType) {
+        this.username = username;
+        this.password = password;
+        this.userType = userType;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public UserType getUserType() {
+        return userType;
     }
 }
