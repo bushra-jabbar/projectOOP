@@ -178,7 +178,9 @@ public class ElectionSystem extends Application {
         button.setMinHeight(40);
         return button;
     }
-    private User loggedInUser;  // Declare loggedInUser
+
+    private User loggedInUser;
+    // Declare loggedInUser
 
     private void showLogin(UserType userType) {
         Stage loginStage = new Stage();

@@ -1,6 +1,5 @@
 package com.e;
-
-
+//
 public class PollingStation {
 
     private String centerName;
