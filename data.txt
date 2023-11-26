@@ -1,0 +1,22 @@
+Voters:
+voter1,voter123,VOTER,3520247623232,amna,0321,2,2
+
+Candidates:
+partycandidate1,party123,PARTY_CANDIDATE
+partycandidate2,party123,PARTY_CANDIDATE
+partycandidate3,party123,PARTY_CANDIDATE
+
+Admins:
+admin,admin123,ADMIN
+
+Parties:
+PTI
+PPP
+PMLN
+
+Polling Stations:
+Wapda Town,1,1
+Iqbal Town,0,1
+Johar Town,1,2
+Izmir Town,0,2
+Bahria Town,1,0
