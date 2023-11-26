@@ -23,70 +23,6 @@ import java.io.FileWriter;
 
 public class ElectionSystem extends Application {
     private ToggleGroup partyToggleGroup;
-
-    private void createDataFile() {
-        StringBuilder dataLines = new StringBuilder();
-
-        // Voters data
-        dataLines.append("Voters:\n");
-        for (User user : users) {
-            if (user.getUserType() == UserType.VOTER) {
-                dataLines.append(String.format("%s,%s,%s,%s,%s,%s,%d,%d\n",
-                        user.getUsername(), user.getPassword(), user.getUserType(),
-                        user.getCnic(), user.getName(), user.getContact(),
-                        user.getX(), user.getY()));
-            }
-        }
-
-        // Candidates data
-        dataLines.append("\nCandidates:\n");
-        for (User user : users) {
-            if (user.getUserType() == UserType.PARTY_CANDIDATE) {
-                dataLines.append(String.format("%s,%s,%s\n",
-                        user.getUsername(), user.getPassword(), user.getUserType()));
-            }
-        }
-
-        // Admins data
-        dataLines.append("\nAdmins:\n");
-        for (User user : users) {
-            if (user.getUserType() == UserType.ADMIN) {
-                dataLines.append(String.format("%s,%s,%s\n",
-                        user.getUsername(), user.getPassword(), user.getUserType()));
-            }
-        }
-
-        // Parties data
-        dataLines.append("\nParties:\n");
-        for (Party party : parties) {
-            dataLines.append(String.format("%s\n", party.getName()));
-        }
-
-        // Polling Stations data
-        dataLines.append("\nPolling Stations:\n");
-        for (PollingStation station : pollingStations) {
-            dataLines.append(String.format("%s,%d,%d\n",
-                    station.getCenterName(), station.getX(), station.getY()));
-        }
-
-        // Display the data in lines
-        System.out.println(dataLines.toString());
-
-        // Now write the data to the file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data.txt"))) {
-            writer.write(dataLines.toString());
-            showAlert("Data Saved", "Data has been saved to data.txt");
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Error", "An error occurred while saving data to the file.");
-        }
-    }
-
-    //list of polling stations
-
-    private List<PollingStation> pollingStations = new ArrayList<>();
-    private static final Map<String, String> partySlogans = new HashMap<>(); // Store party slogans
-
     private String findNearestPollingStation(User voter) {
         double minDistance = Double.MAX_VALUE;
         PollingStation nearestStation = null;
@@ -209,7 +145,68 @@ public class ElectionSystem extends Application {
 //        }
 //    }
 
+    private void createDataFile() {
+        StringBuilder dataLines = new StringBuilder();
 
+        // Voters data
+        dataLines.append("Voters:\n");
+        for (User user : users) {
+            if (user.getUserType() == UserType.VOTER) {
+                dataLines.append(String.format("%s,%s,%s,%s,%s,%s,%d,%d\n",
+                        user.getUsername(), user.getPassword(), user.getUserType(),
+                        user.getCnic(), user.getName(), user.getContact(),
+                        user.getX(), user.getY()));
+            }
+        }
+
+        // Candidates data
+        dataLines.append("\nCandidates:\n");
+        for (User user : users) {
+            if (user.getUserType() == UserType.PARTY_CANDIDATE) {
+                dataLines.append(String.format("%s,%s,%s\n",
+                        user.getUsername(), user.getPassword(), user.getUserType()));
+            }
+        }
+
+        // Admins data
+        dataLines.append("\nAdmins:\n");
+        for (User user : users) {
+            if (user.getUserType() == UserType.ADMIN) {
+                dataLines.append(String.format("%s,%s,%s\n",
+                        user.getUsername(), user.getPassword(), user.getUserType()));
+            }
+        }
+
+        // Parties data
+        dataLines.append("\nParties:\n");
+        for (Party party : parties) {
+            dataLines.append(String.format("%s\n", party.getName()));
+        }
+
+        // Polling Stations data
+        dataLines.append("\nPolling Stations:\n");
+        for (PollingStation station : pollingStations) {
+            dataLines.append(String.format("%s,%d,%d\n",
+                    station.getCenterName(), station.getX(), station.getY()));
+        }
+
+        // Display the data in lines
+        System.out.println(dataLines.toString());
+
+        // Now write the data to the file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data.txt"))) {
+            writer.write(dataLines.toString());
+            showAlert("Data Saved", "Data has been saved to data.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "An error occurred while saving data to the file.");
+        }
+    }
+
+    //list of polling stations
+
+    private List<PollingStation> pollingStations = new ArrayList<>();
+    private static final Map<String, String> partySlogans = new HashMap<>(); // Store party slogans
     // Method to show "How to Register" information
     private void showHowToRegister() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
