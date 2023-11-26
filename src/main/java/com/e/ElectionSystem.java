@@ -23,25 +23,21 @@ import java.io.FileWriter;
 
 public class ElectionSystem extends Application {
     private ToggleGroup partyToggleGroup;
+
+    //--------------------nearest polling station----------------------------------------------------------------
     private String findNearestPollingStation(User voter) {
         double minDistance = Double.MAX_VALUE;
         PollingStation nearestStation = null;
-
         for (PollingStation station : pollingStations) {
             double distance = calculateDistance(voter.getX(), voter.getY(), station.getX(), station.getY());
-
             if (distance < minDistance) {
                 minDistance = distance;
-                nearestStation = station;
-            }
-        }
-
-        if (nearestStation != null) {
+                nearestStation = station;}}
+        if (nearestStation != null){
             return nearestStation.getCenterName();
-        } else {
-            return "No Polling Station Found";
-        }
-    }
+        } else { return "No Polling Station Found";}}
+
+    //--------------------Distance_formula----------------------------------------------------------------
 
     private double calculateDistance(double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
@@ -49,22 +45,28 @@ public class ElectionSystem extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        //--------------------Title----------------------------------------------------------------
 
         primaryStage.setTitle("E-election System");
 //        StackPane stackPane = new StackPane();
+
+        //--------------------Grid----------------------------------------------------------------
+
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(25, 25, 25, 25));
         grid.setHgap(10);
         grid.setVgap(20);
         Scene scene = new Scene(grid, 500, 300);
         primaryStage.setScene(scene);
+        //--------------------alignment----------------------------------------------------------------
         grid.setAlignment(Pos.CENTER_RIGHT);
         BackgroundSize backgroundSize = new BackgroundSize(700, 200, true,true,true,true);
-
+        //--------------------BACKGROUND_IMAGE----------------------------------------------------------------
         Image backgroundImage = new Image("file:C:\\Users\\Amnah\\IdeaProjects\\projectOOP\\src\\main\\java\\com\\e\\Screenshot 2023-11-24 193725.png");
         BackgroundImage background ;
                 background= new BackgroundImage(backgroundImage, BackgroundRepeat.SPACE, BackgroundRepeat.ROUND, BackgroundPosition.CENTER, backgroundSize);
-//        // Blur effect
+         //--------------------blur effect----------------------------------------------------------------
+// Blur effect
 //        GaussianBlur blur = new GaussianBlur(5);  // You can adjust the blur radius
 //        stackPane.setEffect(blur);
 
@@ -81,6 +83,7 @@ public class ElectionSystem extends Application {
         GridPane.setHalignment(headingText, HPos.CENTER);
         grid.add(headingText, 0, 0, 3, 1);
 
+        //--------------------4 Buttons----------------------------------------------------------------
         Button voterLoginButton = createButton("Voter Login");
         Font font = Font.font("Times New Roman", 14);
         voterLoginButton.setFont(font);
@@ -108,6 +111,7 @@ public class ElectionSystem extends Application {
         grid.add(partyCandidateLoginButton, 1, 3);
         partyCandidateLoginButton.setOnAction(e -> showPartyCandidateLogin());
 
+        //--------------------initialization----------------------------------------------------------------
         users.add(new User("voter1", "voter123", UserType.VOTER,"3520247623232","amna","0321",2,2));
         users.add(new User("partycandidate1", "party123", UserType.PARTY_CANDIDATE));
         users.add(new User("partycandidate2", "party123", UserType.PARTY_CANDIDATE));
@@ -145,9 +149,9 @@ public class ElectionSystem extends Application {
 //        }
 //    }
 
-    private void createDataFile() {
+    //--------------------data_stored----------------------------------------------------------------
+    private void electionDataFile() {
         StringBuilder dataLines = new StringBuilder();
-
         // Voters data
         dataLines.append("Voters:\n");
         for (User user : users) {
@@ -155,45 +159,33 @@ public class ElectionSystem extends Application {
                 dataLines.append(String.format("%s,%s,%s,%s,%s,%s,%d,%d\n",
                         user.getUsername(), user.getPassword(), user.getUserType(),
                         user.getCnic(), user.getName(), user.getContact(),
-                        user.getX(), user.getY()));
-            }
-        }
-
+                        user.getX(), user.getY()));}}
         // Candidates data
         dataLines.append("\nCandidates:\n");
         for (User user : users) {
             if (user.getUserType() == UserType.PARTY_CANDIDATE) {
                 dataLines.append(String.format("%s,%s,%s\n",
-                        user.getUsername(), user.getPassword(), user.getUserType()));
-            }
-        }
-
+                        user.getUsername(), user.getPassword(), user.getUserType()));}}
         // Admins data
         dataLines.append("\nAdmins:\n");
         for (User user : users) {
             if (user.getUserType() == UserType.ADMIN) {
                 dataLines.append(String.format("%s,%s,%s\n",
-                        user.getUsername(), user.getPassword(), user.getUserType()));
-            }
-        }
-
+                        user.getUsername(), user.getPassword(), user.getUserType()));}}
         // Parties data
         dataLines.append("\nParties:\n");
         for (Party party : parties) {
-            dataLines.append(String.format("%s\n", party.getName()));
-        }
-
+            dataLines.append(String.format("%s\n", party.getName()));}
         // Polling Stations data
         dataLines.append("\nPolling Stations:\n");
         for (PollingStation station : pollingStations) {
             dataLines.append(String.format("%s,%d,%d\n",
-                    station.getCenterName(), station.getX(), station.getY()));
-        }
+                    station.getCenterName(), station.getX(), station.getY()));}
 
-        // Display the data in lines
+        //Display data in lines
         System.out.println(dataLines.toString());
 
-        // Now write the data to the file
+        //write the data to the file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("data.txt"))) {
             writer.write(dataLines.toString());
             showAlert("Data Saved", "Data has been saved to data.txt");
@@ -204,9 +196,7 @@ public class ElectionSystem extends Application {
     }
 
     //list of polling stations
-
     private List<PollingStation> pollingStations = new ArrayList<>();
-    private static final Map<String, String> partySlogans = new HashMap<>(); // Store party slogans
     // Method to show "How to Register" information
     private void showHowToRegister() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -333,6 +323,8 @@ public class ElectionSystem extends Application {
         optionsStage.setScene(scene);
         optionsStage.show();
     }
+    private static final Map<String, String> partySlogans = new HashMap<>();
+    //Store party slogans
     private List<Party> parties = new ArrayList<>();
     private RadioButton ptiRadioButton;
     private RadioButton pppRadioButton;
@@ -922,7 +914,7 @@ private void showAdminDashboard() {
     grid.add(backButton, 0, 5);
     viewVotersButton.setOnAction(e -> viewAllVoters());
     Button viewElectionDataButton = new Button("View Election Data");
-    viewElectionDataButton.setOnAction(e -> createDataFile());
+    viewElectionDataButton.setOnAction(e -> electionDataFile());
     grid.add(viewElectionDataButton, 0, 4);
     grid.add(backButton, 0, 4);
     viewVotersButton.setOnAction(e -> viewAllVoters());
