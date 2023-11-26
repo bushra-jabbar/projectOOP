@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.io.FileWriter;
 
 public class ElectionSystem extends Application {
     private ToggleGroup partyToggleGroup;
+
     private void createDataFile() {
         StringBuilder dataLines = new StringBuilder();
 
@@ -925,6 +927,9 @@ private void showAdminDashboard() {
     Button viewElectionDataButton = new Button("View Election Data");
     viewElectionDataButton.setOnAction(e -> createDataFile());
     grid.add(viewElectionDataButton, 0, 4);
+    grid.add(backButton, 0, 4);
+    viewVotersButton.setOnAction(e -> viewAllVoters());
+
     viewCandidatesButton.setOnAction(e->viewAllCandidates());
     viewResultsButton.setOnAction(e->updateResults());
     Scene scene = new Scene(grid, 300, 200);
