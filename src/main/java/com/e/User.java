@@ -10,6 +10,25 @@ public class User {
 
     private double x;
     private double y;
+    private boolean hasVoted;
+    private int voterId;
+
+    public int getVoterId() {
+        return voterId;
+    }
+
+    public void setVoterId(int voterId) {
+        this.voterId = voterId;
+    }
+
+    public boolean hasVoted() {
+        return hasVoted;
+    }
+
+    public void setVoted(boolean voted) {
+        this.hasVoted = voted;
+    }
+
 
     public int getX() {
         return (int) x;
@@ -39,7 +58,7 @@ public class User {
         return contact;
     }
 
-    public User(String username, String password, UserType userType, String cnic, String name, String contact, double x, double y) {
+    public User(String username, String password, UserType userType, String cnic, String name, String contact, double x, double y,int voterId) {
         this.username = username;
         this.password = password;
         this.userType = userType;
@@ -48,6 +67,7 @@ public class User {
         this.contact = contact;
         this.x = x;
         this.y = y;
+        this.voterId=voterId;
     }
 
     // Constructor for VOTER type including CNIC, name, and contact

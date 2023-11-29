@@ -1,10 +1,7 @@
 Voters:
-voter1,voter123,VOTER,3520247623232,amna,0321,2,2
-
-Candidates:
-partycandidate1,party123,PARTY_CANDIDATE
-partycandidate2,party123,PARTY_CANDIDATE
-partycandidate3,party123,PARTY_CANDIDATE
+voter1,voter123,VOTER,3520247623232,amna,03232131,2,2
+voter2,voter123,VOTER,3520247624232,areesha,2344,2,2
+voter3,voter123,VOTER,3520247654232,faiza,1923,2,2
 
 Admins:
 admin,admin123,ADMIN
