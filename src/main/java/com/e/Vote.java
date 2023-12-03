@@ -1,5 +1,6 @@
 package com.e;
 public class Vote {
+
     private String voterUsername;
     private String party;
 
