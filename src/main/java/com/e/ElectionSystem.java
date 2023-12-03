@@ -88,7 +88,8 @@ public class ElectionSystem extends Application {
     //list of polling stations
 
     private List<PollingStation> pollingStations = new ArrayList<>();
-    private static final Map<String, String> partySlogans = new HashMap<>(); // Store party slogans
+    // Store party slogans
+    private static final Map<String, String> partySlogans = new HashMap<>();
 
     private String findNearestPollingStation(User voter) {
         double minDistance = Double.MAX_VALUE;
@@ -128,7 +129,7 @@ public class ElectionSystem extends Application {
         grid.setAlignment(Pos.CENTER_RIGHT);
         BackgroundSize backgroundSize = new BackgroundSize(700, 200, true,true,true,true);
 
-        Image backgroundImage = new Image("file:C:\\Users\\Amnah\\IdeaProjects\\projectOOP\\src\\main\\java\\com\\e\\Screenshot 2023-11-24 193725.png");
+        Image backgroundImage = new Image("file:C:\\Users\\Hamza\\IdeaProjects\\projectOOP1\\src\\main\\java\\com\\e\\Screenshot 2023-11-24 193725.png");
         BackgroundImage background ;
         background= new BackgroundImage(backgroundImage, BackgroundRepeat.SPACE, BackgroundRepeat.ROUND, BackgroundPosition.CENTER, backgroundSize);
 //        // Blur effect
@@ -187,19 +188,27 @@ public class ElectionSystem extends Application {
 
         partyCandidateLoginButton.setOnAction(e -> showPartyCandidateLogin());
 
+
+        // add voters
         users.add(new User("voter1", "voter123", UserType.VOTER,"3520247623232","amna","03232131",2,2,004));
         users.add(new User("voter2", "voter123", UserType.VOTER,"3520247624232","areesha","2344",2,2,005));
         users.add(new User("voter3", "voter123", UserType.VOTER,"3520247654232","faiza","1923",2,2,006));
-        users.add(new User("partycandidate1", "party123", UserType.PARTY_CANDIDATE));
-        users.add(new User("partycandidate2", "party123", UserType.PARTY_CANDIDATE));
-        users.add(new User("partycandidate3", "party123", UserType.PARTY_CANDIDATE));
+
+        //        users.add(new User("partycandidate1", "party123", UserType.PARTY_CANDIDATE));
+        //        users.add(new User("partycandidate2", "party123", UserType.PARTY_CANDIDATE));
+        //        users.add(new User("partycandidate3", "party123", UserType.PARTY_CANDIDATE));
+
+        // ADMIN
         users.add(new User("admin", "admin123", UserType.ADMIN));
+
+        // polling stations
         pollingStations.add(new PollingStation("Wapda Town", 1, 1));
         pollingStations.add(new PollingStation("Iqbal Town", 0, 1));
         pollingStations.add(new PollingStation("Johar Town", 1, 2));
         pollingStations.add(new PollingStation("Izmir Town", 0, 2));
         pollingStations.add(new PollingStation("Bahria Town", 1, 0));
-        // Add parties to the parties list
+
+        // add parties to the parties list
         parties.add(new Party(Party1));
         parties.add(new Party(Party2));
         parties.add(new Party(Party3));
@@ -291,7 +300,6 @@ public class ElectionSystem extends Application {
         grid.add(passwordLabel, 0, 1);
         grid.add(passwordField, 1, 1);
         grid.add(loginButton, 1, 2);
-
         if (userType == UserType.VOTER) {
             loginButton.setOnAction(e -> {
                 String username = usernameField.getText();
@@ -300,17 +308,14 @@ public class ElectionSystem extends Application {
                 if (isValidLogin(username, password, userType)) {
                     loggedInUser = findUserByUsername(username); // Set loggedInUser here
 
-                    if (userType == UserType.VOTER && !votedUsers.contains(username)) {
+                    if (userType == UserType.VOTER) {
                         System.out.println(userType + " login successful");
-                        votedUsers.add(username);
                         loginStage.close();
                         showVoterOptions();
-                    } else if (userType != UserType.VOTER) {
+                    } else {
                         System.out.println(userType + " login successful");
-                        loginStage.close();}
-//                    } else {
-//                        showAlert("Invalid Login", userType + " has already voted.");
-//                    }x
+                        loginStage.close();
+                    }
                 } else {
                     showAlert("Invalid Login", "Invalid username or password. Please try again.");
                 }
@@ -336,6 +341,11 @@ public class ElectionSystem extends Application {
         });
 //        Button privacyButton = createButton("Privacy");
         Button castVoteButton = createButton("Cast Vote");
+        castVoteButton.setOnAction(e -> {
+            if (!loggedInUser.hasVoted()) {
+                showVoteCastingWindow();
+            }
+        });
         castVoteButton.setOnAction(e -> showVoteCastingWindow());
         accountButton.setOnAction(e -> showAccountInformation(loggedInUser));
         // Party selection section
@@ -384,8 +394,12 @@ public class ElectionSystem extends Application {
             if (selectedRadioButton != null) {
                 String selectedParty = selectedRadioButton.getText();
                 castVote(selectedParty);  // Increment the vote count for the selected party
-                showAlert("Vote Casted", "You have successfully cast your vote for " + selectedParty);
+//                showAlert("Casted", "You have successfully cast your vote for " + selectedParty);
 
+                // Update the voted status for the logged-in user
+                loggedInUser.setVoted(true);
+                // Call the method to update the status of the logged-in voter
+                updateVoterStatus(loggedInUser);
                 // Disable radio buttons after voting
                 ptiRadioButton.setDisable(true);
                 pppRadioButton.setDisable(true);
@@ -403,7 +417,9 @@ public class ElectionSystem extends Application {
         voteCastingStage.setScene(scene);
         voteCastingStage.show();
     }
-
+    private void updateVoterStatus(User voter) {
+        voter.setVoted(true);
+    }
 
     // Modify the existing castVote method to increment the vote count for the selected party
 //        // Implement logic to increment the vote count for the selected party
@@ -449,16 +465,27 @@ public class ElectionSystem extends Application {
 
     // Modify the existing castVote method to increment the vote count for the selected party
     private void castVote(String selectedParty) {
-        Party party = findPartyByName(selectedParty);
+        User loggedInUser = getCurrentLoggedInUser();  // Assuming you have a method to get the current logged-in user
 
-        if (party != null) {
-            // Increment the vote count for the selected party
-            party.incrementVoteCount();
-            System.out.println(selectedParty + " Vote Casted");
-            // Optionally, you can update the results here or trigger an update
-//                updateResults();
+        if (loggedInUser != null) {
+            if (!loggedInUser.hasVoted()) {
+                Party party = findPartyByName(selectedParty);
+
+                if (party != null) {
+                    // Increment the vote count for the selected party
+                    party.incrementVoteCount();
+                    System.out.println(selectedParty + " Vote Casted");
+
+                    // Update the user's vote status
+                    loggedInUser.setVoted(true);
+                } else {
+                    System.out.println("Error: Party not found");
+                }
+            } else {
+                showAlert("Already Voted", "You have already cast your vote. Multiple votes are not allowed.");
+            }
         } else {
-            System.out.println("Error: Party not found");
+            System.out.println("Error: Logged-in user not found");
         }
     }
 
@@ -488,7 +515,9 @@ public class ElectionSystem extends Application {
         confirmVoteStage.setScene(confirmVoteScene);
         confirmVoteStage.show();
     }
-
+    private User getCurrentLoggedInUser() {
+        return loggedInUser;
+    }
     private Party findPartyByName(String partyName) {
         for (Party party : parties) {
             if (party.getName().equals(partyName)) {
@@ -538,6 +567,7 @@ public class ElectionSystem extends Application {
         Label passwordLabel = new Label("Password:");
         PasswordField passwordField = new PasswordField();
         Button signUpButton = new Button("Sign Up");
+        signUpButton.setStyle("-fx-background-color: green; -fx-text-fill: white; -fx-border-color: black; -fx-border-width: 2px; -fx-background-radius: 5px;");
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -826,7 +856,9 @@ public class ElectionSystem extends Application {
         String slogan = partySlogans.getOrDefault(partyName, "Default Slogan"); // Retrieve slogan or use default
         Label sloganLabel = new Label("Party Slogan: " + slogan);
         Button editSloganButton = new Button("Edit Slogan");
+        editSloganButton.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-background-radius: 5px;");
         Button backButton = new Button("Back");
+        backButton.setStyle("-fx-background-color: green; -fx-text-fill: white; -fx-border-color: black; -fx-border-width: 2px; -fx-background-radius: 5px;");
         // Add complain button
 //        Button complainButton = new Button("Complain");
         GridPane grid = new GridPane();
@@ -861,9 +893,10 @@ public class ElectionSystem extends Application {
                 sloganLabel.setText("Party Slogan: " + newSlogan);
             });
         });
+
         // Handle complain button action
 //        complainButton.setOnAction(e -> {
-            // Implement code to handle complaints
+        // Implement code to handle complaints
 //            TextArea complainTextArea = new TextArea();
 //            complainTextArea.setPromptText("Enter your complaint here");
 //            // Create a dialog for entering complaints
@@ -888,6 +921,7 @@ public class ElectionSystem extends Application {
 //                showAlert("Complaint Recorded", result);
 //            });
 //        });
+
         Scene scene = new Scene(grid, 300, 250);
         candidateDashboardStage.setScene(scene);
         candidateDashboardStage.show();
@@ -964,56 +998,66 @@ public class ElectionSystem extends Application {
         adminDashboardStage.setScene(scene);
         adminDashboardStage.show();
     }
+    private void viewAllVoters() {
+        Stage votersStage = new Stage();
+        votersStage.setTitle("View Voters");
 
-private void viewAllVoters() {
-    Stage votersStage = new Stage();
-    votersStage.setTitle("View Voters");
+        // Create a TableView
+        TableView<User> tableView = new TableView<>();
 
-    // Create a TableView
-    TableView<User> tableView = new TableView<>();
+        // Create columns
+        TableColumn<User, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-    // Create columns
+        TableColumn<User, String> cnicColumn = new TableColumn<>("CNIC");
+        cnicColumn.setCellValueFactory(new PropertyValueFactory<>("cnic"));
 
-    // Create columns
-    TableColumn<User, String> nameColumn = new TableColumn<>("Name");
-    nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        TableColumn<User, Integer> contactColumn = new TableColumn<>("Contact");
+        contactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
 
-    TableColumn<User, String> cnicColumn = new TableColumn<>("CNIC");
-    cnicColumn.setCellValueFactory(new PropertyValueFactory<>("cnic"));
+        TableColumn<User, String> voteStatusColumn = new TableColumn<>("Vote Status");
+        voteStatusColumn.setCellValueFactory(user -> {
+            String status = user.getValue().hasVoted() ? "Casted" : "Not Casted";
+            return new SimpleStringProperty(status);
+        });
 
-    TableColumn<User, Integer> contactColumn = new TableColumn<>("Contact");
-    contactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
-    TableColumn<User, String> voteStatusColumn = new TableColumn<>("Vote Status");
-    voteStatusColumn.setCellValueFactory(user -> {
-        String status = user.getValue().hasVoted() ? "Casted" : "Not Casted";
-        return new SimpleStringProperty(status);
-    });
+        // Add columns to the TableView
+        tableView.getColumns().addAll(nameColumn, cnicColumn, contactColumn, voteStatusColumn);
 
-    // Add columns to the TableView
-    tableView.getColumns().addAll(nameColumn, cnicColumn, voteStatusColumn);
+        // Create an ObservableList to hold data
+        ObservableList<User> votersData = FXCollections.observableArrayList();
 
-    // Create an ObservableList to hold data
-    ObservableList<User> votersData = FXCollections.observableArrayList();
-    for (User user : votersData) {
-        System.out.println("User: " + user.getName() + ", Voted: " + user.hasVoted());
-    }
-    // Add declared voters to the ObservableList
-    for (User user : users) {
-        if (user.getUserType() == UserType.VOTER) {
-            votersData.add(user);
+        // Add declared voters to the ObservableList
+        for (User user : users) {
+            if (user.getUserType() == UserType.VOTER) {
+                votersData.add(user);
+            }
         }
+
+        // Set the data to the TableView
+        tableView.setItems(votersData);
+
+        // Set up the scene
+        Scene scene = new Scene(tableView, 500, 400);
+        votersStage.setScene(scene);
+
+        // Show the stage
+        votersStage.show();
+
+        // Add a ChangeListener to detect changes in the vote status
+        tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (!newValue.hasVoted()) {
+                    newValue.setVoted(true);
+                    tableView.refresh();  // Refresh the TableView to update the displayed data
+                    showAlert("Status Updated", "Voter status has been updated to 'Casted'.");
+                } else {
+                    showAlert("Invalid Operation", "Selected voter has already casted their vote.");
+                }
+            }
+        });
     }
 
-    // Set the data to the TableView
-    tableView.setItems(votersData);
-
-    // Set up the scene
-    Scene scene = new Scene(tableView, 400, 300);
-    votersStage.setScene(scene);
-
-    // Show the stage
-    votersStage.show();
-}
     private void viewAllCandidates() {
         Stage candidatesStage = new Stage();
         candidatesStage.setTitle("View Candidates");
@@ -1025,20 +1069,29 @@ private void viewAllVoters() {
         TableColumn<Party, String> partyNameColumn = new TableColumn<>("Party");
         partyNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-//        TableColumn<Party, String> sloganColumn = new TableColumn<>("Slogan");
-//        sloganColumn.setCellValueFactory(new PropertyValueFactory<>("slogan"));
+        TableColumn<Party, String> yearsColumn = new TableColumn<>("Years");
+        yearsColumn.setCellValueFactory(cellData -> cellData.getValue().yearsProperty());
 
         // Add columns to the TableView
-        tableView.getColumns().addAll(partyNameColumn);
+        tableView.getColumns().addAll(partyNameColumn, yearsColumn);
+
+        // Create sample PartyData
+        List<PartyData> ptiData = List.of(new PartyData("2015-2018"));
+        List<PartyData> pppData = List.of(new PartyData("2012-2015"));
+        List<PartyData> pmlnData = List.of(new PartyData("2018 onwards"));
 
         // Create an ObservableList to hold data
-        ObservableList<Party> partiesData = FXCollections.observableArrayList(parties);
+        ObservableList<Party> partiesData = FXCollections.observableArrayList(
+                new Party("PTI", ptiData),
+                new Party("PPP", pppData),
+                new Party("PMLN", pmlnData)
+        );
 
         // Set the data to the TableView
         tableView.setItems(partiesData);
 
         // Set up the scene
-        Scene scene = new Scene(tableView, 300, 200);
+        Scene scene = new Scene(tableView, 400, 300);
         candidatesStage.setScene(scene);
 
         // Show the stage
@@ -1086,4 +1139,3 @@ private void viewAllVoters() {
     }
 
 }
-
