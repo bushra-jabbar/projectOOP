@@ -1,0 +1,24 @@
+Voters:
+voter1,voter123,VOTER,3520247623231,bushra,03232132311
+voter2,voter123,VOTER,3520247624232,areeha,03144224542
+voter3,voter123,VOTER,3520247654233,faiza,03144213242
+voter4,voter123,VOTER,3520247654234,ayesha,03234213242
+voter5,voter123,VOTER,3520247654235,anam,03214216542
+voter6,voter123,VOTER,3520247654236,amna,03265213212
+voter7,voter123,VOTER,3520247654237,azeema,03023643242
+voter8,voter123,VOTER,3520247654238,halima,03184213242
+
+Admins:
+admin,admin123,ADMIN
+
+Parties:
+PTI
+PPP
+PMLN
+
+Polling Stations:
+Wapda Town,1,1
+Iqbal Town,2,1
+Johar Town,4,2
+Izmir Town,3,2
+Bahria Town,1,0
